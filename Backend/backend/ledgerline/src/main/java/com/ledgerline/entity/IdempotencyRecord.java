@@ -26,6 +26,9 @@ public class IdempotencyRecord {
     @Column(nullable = false, length = 20)
     private String status;
 
+    @Column(name = "response_body", columnDefinition = "TEXT")
+    private String responseBody;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private Instant createdAt;
 
@@ -43,5 +46,7 @@ public class IdempotencyRecord {
     public void setTransactionId(Long transactionId) { this.transactionId = transactionId; }
     public String getStatus() { return status; }
     public void setStatus(String status) { this.status = status; }
+    public String getResponseBody() { return responseBody; }
+    public void setResponseBody(String responseBody) { this.responseBody = responseBody; }
     public Instant getCreatedAt() { return createdAt; }
 }
