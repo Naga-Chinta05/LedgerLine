@@ -75,11 +75,11 @@
             <scope>runtime</scope>
         </dependency>
 
-        <!-- H2 Database for fast isolated unit & integration testing -->
+        <!-- H2 Database for local development and test execution -->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
-            <scope>test</scope>
+            <scope>runtime</scope>
         </dependency>
 
         <dependency>
