@@ -31,7 +31,7 @@ const NewAccountModal = ({ isOpen, onClose, onSuccess }) => {
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60A5FA', padding: '0.4rem', borderRadius: '0.5rem' }}>
+            <div style={{ background: 'var(--primary-glow)', color: 'var(--primary-400)', padding: '0.4rem', borderRadius: '0.5rem' }}>
               <PlusCircle size={20} />
             </div>
             <h3 style={{ fontSize: '1.125rem', fontWeight: 700 }}>Open New Bank Account</h3>
@@ -58,7 +58,7 @@ const NewAccountModal = ({ isOpen, onClose, onSuccess }) => {
               </select>
             </div>
 
-            <div style={{ background: '#0B0F19', padding: '0.85rem 1rem', borderRadius: '0.625rem', border: '1px solid #1E293B', fontSize: '0.8125rem', color: '#64748B' }}>
+            <div style={{ background: 'var(--bg-elevated)', padding: '0.85rem 1rem', borderRadius: '0.625rem', border: '1px solid var(--border-subtle)', fontSize: '0.8125rem', color: 'var(--text-muted)' }}>
               Account will be immediately provisioned with status <strong style={{ color: '#34D399' }}>ACTIVE</strong> and initial balance of ₹0.00.
             </div>
           </div>

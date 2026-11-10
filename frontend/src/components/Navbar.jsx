@@ -1,6 +1,7 @@
 import React from 'react';
 import { useAuth } from '../context/AuthContext';
-import { Landmark, Shield, LogOut, User } from 'lucide-react';
+import ThemeSwitcher from './ThemeSwitcher';
+import { Landmark, LogOut } from 'lucide-react';
 
 const Navbar = () => {
   const { user, logout } = useAuth();
@@ -11,34 +12,36 @@ const Navbar = () => {
       alignItems: 'center',
       justifyContent: 'space-between',
       padding: '1rem 1.75rem',
-      backgroundColor: '#0F172A',
-      borderBottom: '1px solid #1E293B',
+      backgroundColor: 'var(--bg-elevated)',
+      borderBottom: '1px solid var(--border-subtle)',
       position: 'sticky',
       top: 0,
-      zIndex: 50
+      zIndex: 50,
+      transition: 'background-color 0.2s ease, border-color 0.2s ease',
     }}>
       <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
         <div style={{
-          background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+          background: 'var(--primary-gradient)',
           width: '38px',
           height: '38px',
           borderRadius: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          boxShadow: '0 4px 12px rgba(59, 130, 246, 0.4)'
+          boxShadow: '0 4px 14px var(--primary-glow)',
+          transition: 'all 0.2s ease',
         }}>
           <Landmark size={22} color="#FFFFFF" />
         </div>
         <div>
-          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#FFFFFF' }}>
-            Ledger<span style={{ color: '#3B82F6' }}>Line</span>
+          <span style={{ fontSize: '1.25rem', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text-primary)' }}>
+            Ledger<span style={{ color: 'var(--primary-400)' }}>Line</span>
           </span>
           <span style={{
             display: 'block',
             fontSize: '0.65rem',
             fontWeight: 600,
-            color: '#64748B',
+            color: 'var(--text-muted)',
             letterSpacing: '0.06em',
             textTransform: 'uppercase'
           }}>
@@ -47,11 +50,13 @@ const Navbar = () => {
         </div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+        <ThemeSwitcher />
+
         {user && (
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
             <div style={{ textAlign: 'right' }}>
-              <div style={{ fontSize: '0.875rem', fontWeight: 600, color: '#F8FAFC' }}>
+              <div style={{ fontSize: '0.875rem', fontWeight: 600, color: 'var(--text-primary)' }}>
                 {user.fullName}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.35rem' }}>
@@ -81,4 +86,3 @@ const Navbar = () => {
 };
 
 export default Navbar;
-

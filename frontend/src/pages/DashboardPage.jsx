@@ -77,11 +77,11 @@ const DashboardPage = () => {
       {/* Header with Greeting & Refresh */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <div>
-          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+          <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             Welcome back, {user?.fullName} 👋
           </h1>
-          <p style={{ color: '#94A3B8', fontSize: '0.875rem', marginTop: '0.25rem' }}>
-            Role: <strong style={{ color: '#38BDF8' }}>{user?.role}</strong> &bull; Double-entry financial overview
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.25rem' }}>
+            Role: <strong style={{ color: 'var(--primary-400)' }}>{user?.role}</strong> &bull; Double-entry financial overview
           </p>
         </div>
 
@@ -105,14 +105,14 @@ const DashboardPage = () => {
         marginBottom: '2rem'
       }}>
         {/* Total Net Worth */}
-        <div className="card" style={{ background: 'linear-gradient(145deg, #131E33, #0D1524)' }}>
+        <div className="card" style={{ background: 'var(--card-gradient)' }}>
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-            <span style={{ fontSize: '0.8125rem', color: '#94A3B8', fontWeight: 600 }}>Total Available Liquidity</span>
-            <div style={{ background: 'rgba(59, 130, 246, 0.15)', color: '#60A5FA', padding: '0.4rem', borderRadius: '0.5rem' }}>
+            <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Total Available Liquidity</span>
+            <div style={{ background: 'var(--primary-glow)', color: 'var(--primary-400)', padding: '0.4rem', borderRadius: '0.5rem' }}>
               <Wallet size={18} />
             </div>
           </div>
-          <div style={{ fontSize: '1.875rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+          <div style={{ fontSize: '1.875rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
             ₹{totalBalance.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.75rem', color: '#34D399', marginTop: '0.5rem' }}>
@@ -239,23 +239,23 @@ const DashboardPage = () => {
                       <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
                         {tx.type === 'DEPOSIT' && <ArrowDownLeft size={16} color="#34D399" />}
                         {tx.type === 'WITHDRAWAL' && <ArrowUpRight size={16} color="#F87171" />}
-                        {tx.type === 'TRANSFER' && <ArrowRightLeft size={16} color="#38BDF8" />}
+                        {tx.type === 'TRANSFER' && <ArrowRightLeft size={16} color="var(--primary-400)" />}
                         <span>{tx.type}</span>
                       </div>
                     </td>
                     <td className="font-mono" style={{
                       fontWeight: 700,
                       color: tx.type === 'DEPOSIT' ? '#34D399' :
-                             tx.type === 'WITHDRAWAL' ? '#F87171' : '#E2E8F0'
+                             tx.type === 'WITHDRAWAL' ? '#F87171' : 'var(--text-primary)'
                     }}>
                       ₹{parseFloat(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                     </td>
                     <td>
                       {tx.type === 'TRANSFER' ? (
                         <div style={{ fontSize: '0.8125rem' }}>
-                          <span className="font-mono" style={{ color: '#94A3B8' }}>{tx.sourceAccountNumber}</span>
+                          <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>{tx.sourceAccountNumber}</span>
                           {' → '}
-                          <span className="font-mono" style={{ color: '#38BDF8', fontWeight: 600 }}>{tx.destinationAccountNumber}</span>
+                          <span className="font-mono" style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{tx.destinationAccountNumber}</span>
                         </div>
                       ) : tx.sourceAccountNumber ? (
                         <span className="font-mono" style={{ fontSize: '0.8125rem' }}>{tx.sourceAccountNumber}</span>

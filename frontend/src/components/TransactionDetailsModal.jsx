@@ -42,14 +42,14 @@ const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
       <div className="modal-content" style={{ maxWidth: '650px' }} onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: '#1E293B', padding: '0.4rem', borderRadius: '0.5rem' }}>
+            <div style={{ background: 'var(--bg-surface)', padding: '0.4rem', borderRadius: '0.5rem' }}>
               {typeIcon}
             </div>
             <div>
               <h3 style={{ fontSize: '1.125rem', fontWeight: 700 }}>
                 Transaction #{transaction.id}
               </h3>
-              <span style={{ fontSize: '0.75rem', color: '#64748B' }}>
+              <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>
                 {new Date(transaction.createdAt).toLocaleString()}
               </span>
             </div>
@@ -65,19 +65,19 @@ const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
             display: 'grid',
             gridTemplateColumns: '1fr 1fr',
             gap: '1rem',
-            background: '#0B0F19',
+            background: 'var(--bg-elevated)',
             padding: '1rem',
             borderRadius: '0.75rem',
-            border: '1px solid #1E293B',
+            border: '1px solid var(--border-subtle)',
             marginBottom: '1.25rem'
           }}>
             <div>
-              <div style={{ fontSize: '0.75rem', color: '#64748B' }}>TRANSACTION TYPE</div>
-              <div style={{ fontWeight: 700, color: '#FFFFFF', marginTop: '0.15rem' }}>{transaction.type}</div>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>TRANSACTION TYPE</div>
+              <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginTop: '0.15rem' }}>{transaction.type}</div>
             </div>
             <div>
-              <div style={{ fontSize: '0.75rem', color: '#64748B' }}>AMOUNT</div>
-              <div style={{ fontSize: '1.125rem', fontWeight: 800, color: '#38BDF8', marginTop: '0.15rem' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>AMOUNT</div>
+              <div style={{ fontSize: '1.125rem', fontWeight: 800, color: 'var(--primary-400)', marginTop: '0.15rem' }}>
                 ₹{parseFloat(transaction.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })} {transaction.currency}
               </div>
             </div>
@@ -103,8 +103,8 @@ const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
           {/* Double Entry Bookkeeping Table */}
           <div style={{ marginBottom: '1rem' }}>
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem', fontWeight: 700, color: '#E2E8F0' }}>
-                <Scale size={16} color="#38BDF8" />
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.875rem', fontWeight: 700, color: 'var(--text-primary)' }}>
+                <Scale size={16} color="var(--primary-400)" />
                 <span>Double-Entry Bookkeeping Ledger Lines</span>
               </div>
               {isBalanced && (
@@ -116,7 +116,7 @@ const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
             </div>
 
             {loading ? (
-              <div style={{ textAlign: 'center', padding: '1.5rem', color: '#64748B' }}>Loading ledger entries...</div>
+              <div style={{ textAlign: 'center', padding: '1.5rem', color: 'var(--text-muted)' }}>Loading ledger entries...</div>
             ) : (
               <div className="table-container">
                 <table className="data-table">
@@ -131,11 +131,11 @@ const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
                   <tbody>
                     {entries.map((entry) => (
                       <tr key={entry.id}>
-                        <td className="font-mono" style={{ color: '#64748B' }}>#{entry.id}</td>
+                        <td className="font-mono" style={{ color: 'var(--text-muted)' }}>#{entry.id}</td>
                         <td>
-                          <div style={{ fontWeight: 600, color: '#E2E8F0' }}>{entry.accountLabel}</div>
+                          <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{entry.accountLabel}</div>
                           {entry.accountNumber && (
-                            <div className="font-mono" style={{ fontSize: '0.75rem', color: '#38BDF8' }}>
+                            <div className="font-mono" style={{ fontSize: '0.75rem', color: 'var(--primary-400)' }}>
                               {entry.accountNumber}
                             </div>
                           )}
@@ -155,8 +155,8 @@ const TransactionDetailsModal = ({ isOpen, onClose, transaction }) => {
                     ))}
                   </tbody>
                   <tfoot>
-                    <tr style={{ background: '#0B0F19', borderTop: '2px solid #334155' }}>
-                      <td colSpan="2" style={{ fontWeight: 700, color: '#94A3B8' }}>Sum Verification:</td>
+                    <tr style={{ background: 'var(--bg-elevated)', borderTop: '2px solid var(--border-card)' }}>
+                      <td colSpan="2" style={{ fontWeight: 700, color: 'var(--text-secondary)' }}>Sum Verification:</td>
                       <td style={{ fontSize: '0.75rem', fontWeight: 700, color: '#F87171' }}>
                         Debits: ₹{totalDebits.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                       </td>

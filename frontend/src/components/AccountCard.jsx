@@ -27,8 +27,8 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
       justifyContent: 'space-between',
       position: 'relative',
       overflow: 'hidden',
-      background: 'linear-gradient(145deg, #131D31, #0E1626)',
-      border: '1px solid #1E293B',
+      background: 'var(--card-gradient)',
+      border: '1px solid var(--border-subtle)',
     }}>
       {/* Decorative gradient orb */}
       <div style={{
@@ -37,7 +37,7 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
         right: '-40px',
         width: '120px',
         height: '120px',
-        background: 'radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, transparent 70%)',
+        background: 'radial-gradient(circle, var(--primary-glow) 0%, transparent 70%)',
         borderRadius: '50%',
         pointerEvents: 'none'
       }} />
@@ -46,14 +46,14 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
             <div style={{
-              background: 'rgba(59, 130, 246, 0.15)',
+              background: 'var(--primary-glow)',
               padding: '0.4rem',
               borderRadius: '0.5rem',
-              color: '#60A5FA'
+              color: 'var(--primary-400)'
             }}>
               <CreditCard size={18} />
             </div>
-            <span style={{ fontSize: '0.8125rem', color: '#94A3B8', fontWeight: 600 }}>
+            <span style={{ fontSize: '0.8125rem', color: 'var(--text-secondary)', fontWeight: 600 }}>
               Checking Account
             </span>
           </div>
@@ -64,10 +64,10 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
         </div>
 
         <div style={{ marginBottom: '1.25rem' }}>
-          <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Current Balance
           </div>
-          <div style={{ fontSize: '1.875rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em', marginTop: '0.2rem' }}>
+          <div style={{ fontSize: '1.875rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em', marginTop: '0.2rem' }}>
             {formattedBalance}
           </div>
         </div>
@@ -76,15 +76,15 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: '#090D16',
+          background: 'var(--bg-elevated)',
           padding: '0.5rem 0.75rem',
           borderRadius: '0.5rem',
-          border: '1px solid #1E293B',
+          border: '1px solid var(--border-subtle)',
           marginBottom: '1.25rem'
         }}>
           <div>
-            <div style={{ fontSize: '0.65rem', color: '#64748B', fontWeight: 600 }}>ACCOUNT NUMBER</div>
-            <div className="font-mono" style={{ fontSize: '0.875rem', color: '#E2E8F0', fontWeight: 600, letterSpacing: '0.05em' }}>
+            <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', fontWeight: 600 }}>ACCOUNT NUMBER</div>
+            <div className="font-mono" style={{ fontSize: '0.875rem', color: 'var(--text-primary)', fontWeight: 600, letterSpacing: '0.05em' }}>
               {account.accountNumber}
             </div>
           </div>
@@ -94,7 +94,7 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
             style={{ padding: '0.3rem 0.5rem' }}
             title="Copy account number"
           >
-            {copied ? <Check size={14} color="#34D399" /> : <Copy size={14} />}
+            {copied ? <Check size={14} color="var(--primary-400)" /> : <Copy size={14} />}
           </button>
         </div>
       </div>
@@ -125,4 +125,3 @@ const AccountCard = ({ account, onDeposit, onWithdraw, onTransfer }) => {
 };
 
 export default AccountCard;
-

@@ -147,23 +147,23 @@ const TransactionsPage = () => {
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontWeight: 600 }}>
                       {tx.type === 'DEPOSIT' && <ArrowDownLeft size={16} color="#34D399" />}
                       {tx.type === 'WITHDRAWAL' && <ArrowUpRight size={16} color="#F87171" />}
-                      {tx.type === 'TRANSFER' && <ArrowRightLeft size={16} color="#38BDF8" />}
+                      {tx.type === 'TRANSFER' && <ArrowRightLeft size={16} color="var(--primary-400)" />}
                       <span>{tx.type}</span>
                     </div>
                   </td>
                   <td className="font-mono" style={{
                     fontWeight: 700,
                     color: tx.type === 'DEPOSIT' ? '#34D399' :
-                           tx.type === 'WITHDRAWAL' ? '#F87171' : '#E2E8F0'
+                           tx.type === 'WITHDRAWAL' ? '#F87171' : 'var(--text-primary)'
                   }}>
                     ₹{parseFloat(tx.amount).toLocaleString('en-IN', { minimumFractionDigits: 2 })}
                   </td>
                   <td>
                     {tx.type === 'TRANSFER' ? (
                       <div style={{ fontSize: '0.8125rem' }}>
-                        <span className="font-mono" style={{ color: '#94A3B8' }}>{tx.sourceAccountNumber}</span>
+                        <span className="font-mono" style={{ color: 'var(--text-secondary)' }}>{tx.sourceAccountNumber}</span>
                         {' → '}
-                        <span className="font-mono" style={{ color: '#38BDF8', fontWeight: 600 }}>{tx.destinationAccountNumber}</span>
+                        <span className="font-mono" style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{tx.destinationAccountNumber}</span>
                       </div>
                     ) : tx.sourceAccountNumber ? (
                       <span className="font-mono" style={{ fontSize: '0.8125rem' }}>{tx.sourceAccountNumber}</span>

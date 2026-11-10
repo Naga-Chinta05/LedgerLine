@@ -1,7 +1,8 @@
 @echo off
 setlocal
-set "ROOT=%~dp0"
-echo Starting LedgerLine React Frontend...
-cd /d "%ROOT%frontend"
+cd /d "%~dp0frontend"
+echo ========================================================
+echo   Starting LedgerLine React Vite Frontend (Port 5173)
+echo ========================================================
 npm run dev
 pause

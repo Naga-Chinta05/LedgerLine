@@ -28,7 +28,10 @@ export const AuthProvider = ({ children }) => {
           localStorage.setItem('ledgerline_user', JSON.stringify(userData));
         } catch (err) {
           console.error('Session verification failed', err);
-          logout();
+          localStorage.removeItem('ledgerline_token');
+          localStorage.removeItem('ledgerline_user');
+          setToken(null);
+          setUser(null);
         }
       }
       setLoading(false);

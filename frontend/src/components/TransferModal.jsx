@@ -113,7 +113,7 @@ const TransferModal = ({ isOpen, onClose, accounts = [], initialSourceAccount = 
       <div className="modal-content" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', padding: '0.4rem', borderRadius: '0.5rem' }}>
+            <div style={{ background: 'var(--primary-glow)', color: 'var(--primary-400)', padding: '0.4rem', borderRadius: '0.5rem' }}>
               <ArrowRightLeft size={20} />
             </div>
             <h3 style={{ fontSize: '1.125rem', fontWeight: 700 }}>Transfer Money</h3>
@@ -228,14 +228,14 @@ const TransferModal = ({ isOpen, onClose, accounts = [], initialSourceAccount = 
             {/* Live Calculation Preview */}
             {transferAmt > 0 && (
               <div style={{
-                background: '#0B0F19',
+                background: 'var(--bg-elevated)',
                 padding: '0.85rem 1rem',
                 borderRadius: '0.625rem',
-                border: '1px solid #1E293B',
+                border: '1px solid var(--border-subtle)',
                 marginBottom: '1rem',
                 fontSize: '0.8125rem'
               }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94A3B8', marginBottom: '0.25rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', marginBottom: '0.25rem' }}>
                   <span>Source Balance:</span>
                   <span>₹{currentBal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
@@ -243,15 +243,15 @@ const TransferModal = ({ isOpen, onClose, accounts = [], initialSourceAccount = 
                   <span>Deduction:</span>
                   <span>- ₹{transferAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: remainingBal < 0 ? '#EF4444' : '#34D399', borderTop: '1px solid #1E293B', paddingTop: '0.35rem' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 700, color: remainingBal < 0 ? '#EF4444' : '#34D399', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.35rem' }}>
                   <span>Balance After Transfer:</span>
                   <span>₹{remainingBal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
                 </div>
               </div>
             )}
 
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: '#64748B' }}>
-              <ShieldCheck size={14} color="#38BDF8" />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.75rem', color: 'var(--text-muted)' }}>
+              <ShieldCheck size={14} color="var(--primary-400)" />
               <span>Deadlock-free ascending ID locking & balanced double-entry guarantee.</span>
             </div>
           </div>

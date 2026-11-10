@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Landmark, ArrowRight, ShieldCheck } from 'lucide-react';
+import ThemeSwitcher from '../components/ThemeSwitcher';
+import { Landmark, ArrowRight } from 'lucide-react';
 
 const RegisterPage = () => {
   const [fullName, setFullName] = useState('');
@@ -37,27 +38,35 @@ const RegisterPage = () => {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '1.5rem',
-      background: 'radial-gradient(circle at 50% 20%, #172554 0%, #0B0F19 65%)',
+      background: 'var(--hero-gradient)',
+      position: 'relative',
+      transition: 'background 0.3s ease',
     }}>
+      {/* Theme Switcher in top right */}
+      <div style={{ position: 'absolute', top: '1.25rem', right: '1.5rem' }}>
+        <ThemeSwitcher />
+      </div>
+
       <div style={{ maxWidth: '440px', width: '100%' }}>
         <div style={{ textAlign: 'center', marginBottom: '1.75rem' }}>
           <div style={{
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            background: 'linear-gradient(135deg, #3B82F6, #1D4ED8)',
+            background: 'var(--primary-gradient)',
             width: '48px',
             height: '48px',
             borderRadius: '14px',
-            boxShadow: '0 8px 24px rgba(59, 130, 246, 0.45)',
+            boxShadow: '0 8px 24px var(--primary-glow)',
             marginBottom: '0.75rem',
+            transition: 'all 0.2s ease',
           }}>
             <Landmark size={26} color="#FFFFFF" />
           </div>
-          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFFFFF' }}>
+          <h1 style={{ fontSize: '1.5rem', fontWeight: 800, color: 'var(--text-primary)' }}>
             Open a LedgerLine Account
           </h1>
-          <p style={{ color: '#94A3B8', fontSize: '0.875rem', marginTop: '0.2rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.875rem', marginTop: '0.2rem' }}>
             Instant digital checking account with double-entry security
           </p>
         </div>
@@ -124,9 +133,9 @@ const RegisterPage = () => {
             </button>
           </form>
 
-          <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: '#94A3B8' }}>
+          <div style={{ textAlign: 'center', marginTop: '1.5rem', fontSize: '0.875rem', color: 'var(--text-secondary)' }}>
             Already have an account?{' '}
-            <Link to="/login" style={{ color: '#38BDF8', fontWeight: 600, textDecoration: 'none' }}>
+            <Link to="/login" style={{ color: 'var(--primary-400)', fontWeight: 600, textDecoration: 'none' }}>
               Sign In
             </Link>
           </div>
@@ -137,4 +146,3 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
-

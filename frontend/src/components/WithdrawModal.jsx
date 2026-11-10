@@ -64,9 +64,9 @@ const WithdrawModal = ({ isOpen, onClose, account, onSuccess }) => {
 
         <form onSubmit={handleSubmit}>
           <div className="modal-body">
-            <div style={{ background: '#0B0F19', padding: '0.85rem 1rem', borderRadius: '0.625rem', border: '1px solid #1E293B', marginBottom: '1.25rem' }}>
-              <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>SOURCE ACCOUNT</div>
-              <div className="font-mono" style={{ fontSize: '1rem', fontWeight: 700, color: '#38BDF8', marginTop: '0.15rem' }}>
+            <div style={{ background: 'var(--bg-elevated)', padding: '0.85rem 1rem', borderRadius: '0.625rem', border: '1px solid var(--border-subtle)', marginBottom: '1.25rem' }}>
+              <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>SOURCE ACCOUNT</div>
+              <div className="font-mono" style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--primary-400)', marginTop: '0.15rem' }}>
                 {account.accountNumber}
               </div>
               <div style={{ fontSize: '0.8125rem', color: '#94A3B8', marginTop: '0.2rem' }}>

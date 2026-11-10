@@ -33,7 +33,7 @@ const AuditLogsPage = () => {
             <div style={{ background: 'rgba(245, 158, 11, 0.15)', color: '#FBBF24', padding: '0.5rem', borderRadius: '0.625rem' }}>
               <ShieldCheck size={24} />
             </div>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Immutable Compliance Audit Trail
             </h1>
           </div>

@@ -120,9 +120,9 @@ const AdminAccountsPage = () => {
             ) : (
               filteredAccounts.map((acc) => (
                 <tr key={acc.id}>
-                  <td className="font-mono" style={{ color: '#64748B' }}>#{acc.id}</td>
-                  <td className="font-mono" style={{ color: '#38BDF8', fontWeight: 600 }}>{acc.accountNumber}</td>
-                  <td style={{ fontWeight: 600, color: '#FFFFFF' }}>{acc.ownerName}</td>
+                  <td className="font-mono" style={{ color: 'var(--text-muted)' }}>#{acc.id}</td>
+                  <td className="font-mono" style={{ color: 'var(--primary-400)', fontWeight: 600 }}>{acc.accountNumber}</td>
+                  <td style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{acc.ownerName}</td>
                   <td style={{ color: '#94A3B8', fontSize: '0.8125rem' }}>{acc.ownerEmail}</td>
                   <td className="font-mono" style={{ fontWeight: 700, color: '#34D399' }}>
                     ₹{parseFloat(acc.balance).toLocaleString('en-IN', { minimumFractionDigits: 2 })}

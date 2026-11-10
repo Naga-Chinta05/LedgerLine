@@ -35,10 +35,10 @@ const ReconciliationPage = () => {
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem' }}>
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-            <div style={{ background: 'rgba(56, 189, 248, 0.15)', color: '#38BDF8', padding: '0.5rem', borderRadius: '0.625rem' }}>
+            <div style={{ background: 'var(--primary-glow)', color: 'var(--primary-400)', padding: '0.5rem', borderRadius: '0.625rem' }}>
               <Scale size={24} />
             </div>
-            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: '#FFFFFF', letterSpacing: '-0.02em' }}>
+            <h1 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.02em' }}>
               Double-Entry Ledger Reconciliation
             </h1>
           </div>
@@ -152,8 +152,8 @@ const ReconciliationPage = () => {
           </div>
 
           {/* Principles explanation */}
-          <div className="card" style={{ background: '#0F172A' }}>
-            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '0.75rem' }}>
+          <div className="card" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
+            <h3 style={{ fontSize: '1.125rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.75rem' }}>
               How LedgerLine Guarantees Financial Correctness:
             </h3>
             <ul style={{ color: '#94A3B8', fontSize: '0.875rem', lineHeight: 1.8, paddingLeft: '1.25rem' }}>

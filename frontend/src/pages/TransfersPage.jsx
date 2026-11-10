@@ -248,26 +248,26 @@ const TransfersPage = () => {
           {/* Live Simulator Panel */}
           {transferAmt > 0 && (
             <div style={{
-              background: '#0B0F19',
+              background: 'var(--bg-elevated)',
               padding: '1rem',
               borderRadius: '0.75rem',
-              border: '1px solid #1E293B',
+              border: '1px solid var(--border-subtle)',
               marginBottom: '1.5rem',
               fontSize: '0.875rem'
             }}>
-              <div style={{ fontWeight: 700, color: '#E2E8F0', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-                <Zap size={16} color="#38BDF8" />
+              <div style={{ fontWeight: 700, color: 'var(--text-primary)', marginBottom: '0.5rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                <Zap size={16} color="var(--primary-400)" />
                 <span>Double-Entry Execution Preview</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94A3B8', marginBottom: '0.35rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                 <span>Source Account Debit:</span>
                 <span className="font-mono" style={{ color: '#F87171' }}>- ₹{transferAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#94A3B8', marginBottom: '0.35rem' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--text-secondary)', marginBottom: '0.35rem' }}>
                 <span>Destination Account Credit:</span>
                 <span className="font-mono" style={{ color: '#34D399' }}>+ ₹{transferAmt.toLocaleString('en-IN', { minimumFractionDigits: 2 })}</span>
               </div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid #1E293B', paddingTop: '0.5rem', fontWeight: 700 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--border-subtle)', paddingTop: '0.5rem', fontWeight: 700 }}>
                 <span>Resulting Available Balance:</span>
                 <span className="font-mono" style={{ color: remainingBal < 0 ? '#EF4444' : '#34D399' }}>
                   ₹{remainingBal.toLocaleString('en-IN', { minimumFractionDigits: 2 })}

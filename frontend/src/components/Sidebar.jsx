@@ -23,23 +23,24 @@ const Sidebar = () => {
     fontWeight: 600,
     textDecoration: 'none',
     transition: 'all 0.15s ease',
-    backgroundColor: isActive ? '#1E293B' : 'transparent',
-    color: isActive ? '#38BDF8' : '#94A3B8',
-    borderLeft: isActive ? '3px solid #38BDF8' : '3px solid transparent',
+    backgroundColor: isActive ? 'var(--bg-surface)' : 'transparent',
+    color: isActive ? 'var(--primary-400)' : 'var(--text-secondary)',
+    borderLeft: isActive ? '3px solid var(--primary-500)' : '3px solid transparent',
   });
 
   return (
     <aside style={{
       width: '260px',
-      backgroundColor: '#0F172A',
-      borderRight: '1px solid #1E293B',
+      backgroundColor: 'var(--bg-elevated)',
+      borderRight: '1px solid var(--border-subtle)',
       display: 'flex',
       flexDirection: 'column',
       padding: '1.25rem 0.85rem',
       gap: '0.5rem',
       minHeight: 'calc(100vh - 65px)',
+      transition: 'background-color 0.2s ease, border-color 0.2s ease',
     }}>
-      <div style={{ padding: '0 0.5rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+      <div style={{ padding: '0 0.5rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
         Banking
       </div>
 
@@ -60,7 +61,7 @@ const Sidebar = () => {
 
       {isAuditor && (
         <>
-          <div style={{ padding: '1.25rem 0.5rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ padding: '1.25rem 0.5rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Compliance & Audit
           </div>
 
@@ -78,7 +79,7 @@ const Sidebar = () => {
 
       {isAdmin && (
         <>
-          <div style={{ padding: '1.25rem 0.5rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: '#475569', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+          <div style={{ padding: '1.25rem 0.5rem 0.5rem', fontSize: '0.75rem', fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
             Administration
           </div>
 
@@ -89,11 +90,11 @@ const Sidebar = () => {
         </>
       )}
 
-      <div style={{ marginTop: 'auto', padding: '1rem 0.75rem', backgroundColor: '#0B0F19', borderRadius: '0.75rem', border: '1px solid #1E293B' }}>
-        <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>System Status</div>
+      <div style={{ marginTop: 'auto', padding: '1rem 0.75rem', backgroundColor: 'var(--bg-card)', borderRadius: '0.75rem', border: '1px solid var(--border-subtle)' }}>
+        <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontWeight: 600 }}>System Status</div>
         <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', marginTop: '0.35rem' }}>
-          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: '#10B981', boxShadow: '0 0 8px #10B981' }} />
-          <span style={{ fontSize: '0.75rem', color: '#CBD5E1', fontWeight: 600 }}>Zero-Sum Ledger Active</span>
+          <div style={{ width: '8px', height: '8px', borderRadius: '50%', backgroundColor: 'var(--primary-400)', boxShadow: '0 0 8px var(--primary-400)' }} />
+          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 600 }}>Zero-Sum Ledger Active</span>
         </div>
       </div>
     </aside>
@@ -101,4 +102,3 @@ const Sidebar = () => {
 };
 
 export default Sidebar;
-
