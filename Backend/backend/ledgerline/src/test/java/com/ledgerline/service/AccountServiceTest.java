@@ -2,13 +2,23 @@ package com.ledgerline.service;
 
 import com.ledgerline.dto.request.CreateAccountRequest;
 import com.ledgerline.dto.response.AccountResponse;
+import com.ledgerline.dto.response.AccountStatementResponse;
+import com.ledgerline.dto.response.SystemSummaryResponse;
 import com.ledgerline.entity.Account;
+import com.ledgerline.entity.FinancialTransaction;
+import com.ledgerline.entity.LedgerEntry;
 import com.ledgerline.entity.User;
 import com.ledgerline.enums.AccountStatus;
+import com.ledgerline.enums.EntryType;
+import com.ledgerline.enums.TransactionStatus;
+import com.ledgerline.enums.TransactionType;
 import com.ledgerline.enums.UserRole;
 import com.ledgerline.exception.AccountNotFoundException;
 import com.ledgerline.repository.AccountRepository;
+import com.ledgerline.repository.FinancialTransactionRepository;
+import com.ledgerline.repository.LedgerEntryRepository;
 import com.ledgerline.repository.UserRepository;
+import com.ledgerline.security.UserPrincipal;
 import com.ledgerline.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,6 +44,12 @@ class AccountServiceTest {
 
     @Mock
     private UserRepository userRepository;
+
+    @Mock
+    private LedgerEntryRepository ledgerEntryRepository;
+
+    @Mock
+    private FinancialTransactionRepository transactionRepository;
 
     @Mock
     private AuditService auditService;
@@ -112,6 +128,70 @@ class AccountServiceTest {
         when(accountRepository.findById(999L)).thenReturn(Optional.empty());
 
         assertThrows(AccountNotFoundException.class, () -> accountService.getAccountById(999L));
+    }
+
+    @Test
+    @DisplayName("Account Statement: Computes opening balance, closing balance and cash flows")
+    void testAccountStatement() {
+        when(accountRepository.findById(50L)).thenReturn(Optional.of(account));
+        when(ledgerEntryRepository.sumAmountByAccountAndEntryTypeBefore(eq(50L), eq(EntryType.CREDIT), any())).thenReturn(new BigDecimal("1000.00"));
+        when(ledgerEntryRepository.sumAmountByAccountAndEntryTypeBefore(eq(50L), eq(EntryType.DEBIT), any())).thenReturn(new BigDecimal("200.00"));
+
+        FinancialTransaction tx = new FinancialTransaction();
+        tx.setType(TransactionType.DEPOSIT);
+        tx.setDescription("Payroll Deposit");
+        try {
+            var f = FinancialTransaction.class.getDeclaredField("id");
+            f.setAccessible(true);
+            f.set(tx, 101L);
+        } catch (Exception ignored) {}
+
+        LedgerEntry entry = new LedgerEntry();
+        entry.setAccount(account);
+        entry.setEntryType(EntryType.CREDIT);
+        entry.setAmount(new BigDecimal("500.00"));
+        entry.setTransaction(tx);
+        entry.setAccountLabel("PAYROLL");
+        try {
+            var f = LedgerEntry.class.getDeclaredField("id");
+            f.setAccessible(true);
+            f.set(entry, 201L);
+            var fTime = LedgerEntry.class.getDeclaredField("createdAt");
+            fTime.setAccessible(true);
+            fTime.set(entry, java.time.Instant.now());
+        } catch (Exception ignored) {}
+
+        when(ledgerEntryRepository.findByAccountIdAndDateRange(eq(50L), any(), any())).thenReturn(List.of(entry));
+
+        UserPrincipal principal = UserPrincipal.create(user);
+        AccountStatementResponse statement = accountService.getAccountStatement(50L, null, null, principal);
+
+        assertNotNull(statement);
+        assertEquals(new BigDecimal("800.00"), statement.getOpeningBalance()); // 1000 - 200
+        assertEquals(new BigDecimal("1300.00"), statement.getClosingBalance()); // 800 + 500
+        assertEquals(new BigDecimal("500.00"), statement.getTotalCredits());
+        assertEquals(BigDecimal.ZERO, statement.getTotalDebits());
+        assertEquals(1, statement.getTransactionCount());
+    }
+
+    @Test
+    @DisplayName("System Summary: Correctly tallies users, accounts, liquidity, and ledger balance")
+    void testSystemSummary() {
+        when(userRepository.count()).thenReturn(10L);
+        when(accountRepository.count()).thenReturn(15L);
+        when(accountRepository.sumTotalLiquidity()).thenReturn(new BigDecimal("75000.00"));
+        when(transactionRepository.count()).thenReturn(50L);
+        when(ledgerEntryRepository.sumAmountByEntryType(EntryType.DEBIT)).thenReturn(new BigDecimal("120000.00"));
+        when(ledgerEntryRepository.sumAmountByEntryType(EntryType.CREDIT)).thenReturn(new BigDecimal("120000.00"));
+
+        SystemSummaryResponse summary = accountService.getSystemSummary();
+
+        assertNotNull(summary);
+        assertEquals(10L, summary.getTotalUsers());
+        assertEquals(15L, summary.getTotalAccounts());
+        assertEquals(new BigDecimal("75000.00"), summary.getTotalSystemLiquidity());
+        assertTrue(summary.isReconciled());
+        assertEquals(0, summary.getLedgerVariance().compareTo(BigDecimal.ZERO));
     }
 }
 

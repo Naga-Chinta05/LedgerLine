@@ -12,9 +12,9 @@ public interface TransactionService {
     TransactionResponse deposit(DepositRequest request, String idempotencyKey, UserPrincipal principal, String ipAddress);
     TransactionResponse withdraw(WithdrawalRequest request, String idempotencyKey, UserPrincipal principal, String ipAddress);
     TransactionResponse transfer(TransferRequest request, String idempotencyKey, UserPrincipal principal, String ipAddress);
+    TransactionResponse reverseTransaction(Long transactionId, String reason, UserPrincipal principal, String ipAddress);
     TransactionResponse getTransactionById(Long transactionId, UserPrincipal principal);
     Page<TransactionResponse> getTransactionsForUser(UserPrincipal principal, Pageable pageable);
     Page<TransactionResponse> getTransactionsForAccount(Long accountId, UserPrincipal principal, Pageable pageable);
     Page<TransactionResponse> getAllTransactions(Pageable pageable);
 }
-

@@ -1,6 +1,8 @@
 package com.ledgerline.repository;
 
 import com.ledgerline.entity.FinancialTransaction;
+import com.ledgerline.enums.TransactionStatus;
+import com.ledgerline.enums.TransactionType;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,6 +10,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Repository
@@ -19,8 +22,15 @@ public interface FinancialTransactionRepository extends JpaRepository<FinancialT
     Page<FinancialTransaction> findByAccountId(@Param("accountId") Long accountId, Pageable pageable);
 
     @Query("SELECT t FROM FinancialTransaction t WHERE t.sourceAccount.id IN :accountIds OR t.destinationAccount.id IN :accountIds OR t.createdBy = :userId ORDER BY t.createdAt DESC")
-    Page<FinancialTransaction> findByUserInvolvement(@Param("userId") Long userId, @Param("accountIds") List<Long> accountIds, Pageable pageable);
+    Page<FinancialTransaction> findByUserInvolvement(@Param("userId") Long userId,
+            @Param("accountIds") List<Long> accountIds, Pageable pageable);
 
     List<FinancialTransaction> findTop10ByCreatedByOrderByCreatedAtDesc(Long createdBy);
-}
 
+    long countByType(TransactionType type);
+
+    long countByStatus(TransactionStatus status);
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM FinancialTransaction t WHERE t.status = 'POSTED'")
+    BigDecimal sumTotalVolume();
+}

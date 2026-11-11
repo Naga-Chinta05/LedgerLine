@@ -1,7 +1,9 @@
 package com.ledgerline.service.impl;
 
+import com.ledgerline.dto.request.ChangePasswordRequest;
 import com.ledgerline.dto.request.LoginRequest;
 import com.ledgerline.dto.request.RegisterRequest;
+import com.ledgerline.dto.request.UpdateProfileRequest;
 import com.ledgerline.dto.response.AuthResponse;
 import com.ledgerline.dto.response.UserProfileResponse;
 import com.ledgerline.entity.Account;
@@ -130,9 +132,70 @@ public class AuthServiceImpl implements AuthService {
                 user.getId(),
                 user.getEmail(),
                 user.getFullName(),
+                user.getPhoneNumber(),
                 user.getRole(),
                 user.isEnabled(),
                 user.getCreatedAt()
+        );
+    }
+
+    @Override
+    @Transactional
+    public UserProfileResponse updateProfile(Long userId, UpdateProfileRequest request, String ipAddress) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        user.setFullName(request.getFullName().trim());
+        if (request.getPhoneNumber() != null) {
+            user.setPhoneNumber(request.getPhoneNumber().trim());
+        }
+
+        User updated = userRepository.save(user);
+
+        auditService.logAction(
+                userId,
+                "UPDATE_PROFILE",
+                "USER",
+                userId,
+                "Updated user profile for " + updated.getEmail(),
+                ipAddress
+        );
+
+        return new UserProfileResponse(
+                updated.getId(),
+                updated.getEmail(),
+                updated.getFullName(),
+                updated.getPhoneNumber(),
+                updated.getRole(),
+                updated.isEnabled(),
+                updated.getCreatedAt()
+        );
+    }
+
+    @Override
+    @Transactional
+    public void changePassword(Long userId, ChangePasswordRequest request, String ipAddress) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + userId));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPasswordHash())) {
+            throw new InvalidTransactionException("Current password provided does not match our records.");
+        }
+
+        if (passwordEncoder.matches(request.getNewPassword(), user.getPasswordHash())) {
+            throw new InvalidTransactionException("New password cannot be identical to the current password.");
+        }
+
+        user.setPasswordHash(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+
+        auditService.logAction(
+                userId,
+                "CHANGE_PASSWORD",
+                "USER",
+                userId,
+                "User changed account password successfully",
+                ipAddress
         );
     }
 
@@ -145,4 +208,3 @@ public class AuthServiceImpl implements AuthService {
         return accNum;
     }
 }
-

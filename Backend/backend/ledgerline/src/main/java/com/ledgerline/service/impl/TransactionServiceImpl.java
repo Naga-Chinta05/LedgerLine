@@ -317,6 +317,101 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    public TransactionResponse reverseTransaction(Long transactionId, String reason, UserPrincipal principal, String ipAddress) {
+        if (principal.getRole() != UserRole.ADMIN && principal.getRole() != UserRole.AUDITOR) {
+            throw new UnauthorizedAccessException("Only Administrators and Auditors can reverse financial transactions.");
+        }
+        if (reason == null || reason.trim().isEmpty()) {
+            throw new InvalidTransactionException("A reversal reason must be provided for audit compliance.");
+        }
+
+        FinancialTransaction originalTx = transactionRepository.findById(transactionId)
+                .orElseThrow(() -> new ResourceNotFoundException("Transaction not found with id: " + transactionId));
+
+        if (originalTx.getStatus() != TransactionStatus.POSTED) {
+            throw new InvalidTransactionException(String.format("Cannot reverse transaction #%d because status is %s (only POSTED transactions can be reversed).",
+                    transactionId, originalTx.getStatus()));
+        }
+
+        if (originalTx.getType() == TransactionType.DEPOSIT) {
+            Account dest = accountRepository.findByAccountNumberWithLock(originalTx.getDestinationAccount().getAccountNumber())
+                    .orElseThrow(() -> new AccountNotFoundException(originalTx.getDestinationAccount().getAccountNumber()));
+
+            if (dest.getBalance().compareTo(originalTx.getAmount()) < 0) {
+                throw new InsufficientFundsException(dest.getAccountNumber(), dest.getBalance(), originalTx.getAmount());
+            }
+
+            dest.setBalance(dest.getBalance().subtract(originalTx.getAmount()));
+            accountRepository.save(dest);
+
+            // Reversal double-entry: Debit Customer Account, Credit Central Reserve
+            ledgerService.recordEntry(originalTx, dest, EntryType.DEBIT, originalTx.getAmount(), dest.getCurrency(),
+                    "REVERSAL_DEPOSIT: " + reason.trim());
+            ledgerService.recordEntry(originalTx, null, EntryType.CREDIT, originalTx.getAmount(), dest.getCurrency(),
+                    "REVERSAL_CENTRAL_RESERVE: " + reason.trim());
+
+        } else if (originalTx.getType() == TransactionType.WITHDRAWAL) {
+            Account src = accountRepository.findByAccountNumberWithLock(originalTx.getSourceAccount().getAccountNumber())
+                    .orElseThrow(() -> new AccountNotFoundException(originalTx.getSourceAccount().getAccountNumber()));
+
+            src.setBalance(src.getBalance().add(originalTx.getAmount()));
+            accountRepository.save(src);
+
+            // Reversal double-entry: Debit Central Reserve, Credit Customer Account
+            ledgerService.recordEntry(originalTx, null, EntryType.DEBIT, originalTx.getAmount(), src.getCurrency(),
+                    "REVERSAL_CENTRAL_RESERVE: " + reason.trim());
+            ledgerService.recordEntry(originalTx, src, EntryType.CREDIT, originalTx.getAmount(), src.getCurrency(),
+                    "REVERSAL_WITHDRAWAL: " + reason.trim());
+
+        } else if (originalTx.getType() == TransactionType.TRANSFER) {
+            Long srcId = originalTx.getSourceAccount().getId();
+            Long dstId = originalTx.getDestinationAccount().getId();
+            Long firstId = Math.min(srcId, dstId);
+            Long secondId = Math.max(srcId, dstId);
+
+            Account firstLocked = accountRepository.findByIdWithLock(firstId)
+                    .orElseThrow(() -> new AccountNotFoundException(firstId));
+            Account secondLocked = accountRepository.findByIdWithLock(secondId)
+                    .orElseThrow(() -> new AccountNotFoundException(secondId));
+
+            Account src = srcId.equals(firstId) ? firstLocked : secondLocked;
+            Account dst = dstId.equals(firstId) ? firstLocked : secondLocked;
+
+            if (dst.getBalance().compareTo(originalTx.getAmount()) < 0) {
+                throw new InsufficientFundsException(dst.getAccountNumber(), dst.getBalance(), originalTx.getAmount());
+            }
+
+            dst.setBalance(dst.getBalance().subtract(originalTx.getAmount()));
+            src.setBalance(src.getBalance().add(originalTx.getAmount()));
+            accountRepository.save(dst);
+            accountRepository.save(src);
+
+            // Reversal double-entry: Debit Destination Account, Credit Source Account
+            ledgerService.recordEntry(originalTx, dst, EntryType.DEBIT, originalTx.getAmount(), dst.getCurrency(),
+                    "REVERSAL_TRANSFER_DEBIT: " + dst.getAccountNumber());
+            ledgerService.recordEntry(originalTx, src, EntryType.CREDIT, originalTx.getAmount(), src.getCurrency(),
+                    "REVERSAL_TRANSFER_CREDIT: " + src.getAccountNumber());
+        }
+
+        originalTx.setStatus(TransactionStatus.REVERSED);
+        originalTx.setDescription(originalTx.getDescription() + " [REVERSED: " + reason.trim() + "]");
+        FinancialTransaction saved = transactionRepository.save(originalTx);
+
+        auditService.logAction(
+                principal.getId(),
+                "TRANSACTION_REVERSAL",
+                "TRANSACTION",
+                saved.getId(),
+                String.format("Reversed transaction #%d (%s of %s %s). Reason: %s",
+                        saved.getId(), saved.getType(), saved.getAmount(), saved.getCurrency(), reason.trim()),
+                ipAddress
+        );
+
+        return mapToResponse(saved);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public TransactionResponse getTransactionById(Long transactionId, UserPrincipal principal) {
         FinancialTransaction tx = transactionRepository.findById(transactionId)

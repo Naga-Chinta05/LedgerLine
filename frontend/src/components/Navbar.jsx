@@ -60,10 +60,9 @@ const Navbar = () => {
                 {user.fullName}
               </div>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '0.35rem' }}>
-                <span className={`badge ${
-                  user.role === 'ADMIN' ? 'badge-danger' :
-                  user.role === 'AUDITOR' ? 'badge-warning' : 'badge-active'
-                }`} style={{ fontSize: '0.65rem', padding: '0.15rem 0.5rem' }}>
+                <span className={`badge ${user.role === 'ADMIN' ? 'badge-danger' :
+                    user.role === 'AUDITOR' ? 'badge-warning' : 'badge-active'
+                  }`} style={{ fontSize: '0.65rem', padding: '0.15rem 0.5rem' }}>
                   {user.role}
                 </span>
               </div>

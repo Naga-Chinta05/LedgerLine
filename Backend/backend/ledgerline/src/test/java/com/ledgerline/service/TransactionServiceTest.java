@@ -9,12 +9,14 @@ import com.ledgerline.entity.FinancialTransaction;
 import com.ledgerline.entity.User;
 import com.ledgerline.enums.AccountStatus;
 import com.ledgerline.enums.EntryType;
+import com.ledgerline.enums.TransactionStatus;
 import com.ledgerline.enums.TransactionType;
 import com.ledgerline.enums.UserRole;
 import com.ledgerline.exception.AccountInactiveException;
 import com.ledgerline.exception.IdempotencyConflictException;
 import com.ledgerline.exception.InsufficientFundsException;
 import com.ledgerline.exception.InvalidTransactionException;
+import com.ledgerline.exception.UnauthorizedAccessException;
 import com.ledgerline.repository.AccountRepository;
 import com.ledgerline.repository.FinancialTransactionRepository;
 import com.ledgerline.security.UserPrincipal;
@@ -252,6 +254,66 @@ class TransactionServiceTest {
         assertEquals(999L, result.getId());
         verify(accountRepository, never()).findByAccountNumberWithLock(any());
         verify(transactionRepository, never()).save(any());
+    }
+
+    @Test
+    @DisplayName("Reversal: Successfully reverses POSTED transfer and creates offsetting double-entry ledger lines")
+    void testReverseTransferSuccess() {
+        FinancialTransaction tx = new FinancialTransaction();
+        tx.setType(TransactionType.TRANSFER);
+        tx.setStatus(TransactionStatus.POSTED);
+        tx.setAmount(new BigDecimal("300.00"));
+        tx.setCurrency("INR");
+        tx.setSourceAccount(sourceAccount);
+        tx.setDestinationAccount(destAccount);
+        tx.setDescription("Original Transfer");
+        tx.setCreatedBy(1L);
+        try {
+            var f = FinancialTransaction.class.getDeclaredField("id");
+            f.setAccessible(true);
+            f.set(tx, 77L);
+        } catch (Exception ignored) {}
+
+        when(transactionRepository.findById(77L)).thenReturn(Optional.of(tx));
+        when(accountRepository.findByIdWithLock(10L)).thenReturn(Optional.of(sourceAccount));
+        when(accountRepository.findByIdWithLock(20L)).thenReturn(Optional.of(destAccount));
+        when(transactionRepository.save(any(FinancialTransaction.class))).thenAnswer(i -> i.getArgument(0));
+
+        User adminUser = new User();
+        adminUser.setEmail("admin@ledgerline.com");
+        adminUser.setFullName("System Admin");
+        adminUser.setRole(UserRole.ADMIN);
+        try {
+            var f = User.class.getDeclaredField("id");
+            f.setAccessible(true);
+            f.set(adminUser, 99L);
+        } catch (Exception ignored) {}
+        UserPrincipal adminPrincipal = UserPrincipal.create(adminUser);
+
+        BigDecimal srcBefore = sourceAccount.getBalance();
+        BigDecimal dstBefore = destAccount.getBalance();
+
+        TransactionResponse response = transactionService.reverseTransaction(77L, "Dispute resolved", adminPrincipal, "127.0.0.1");
+
+        assertNotNull(response);
+        assertEquals(TransactionStatus.REVERSED, response.getStatus());
+        // Source refunded +300
+        assertEquals(srcBefore.add(new BigDecimal("300.00")), sourceAccount.getBalance());
+        // Dest deducted -300
+        assertEquals(dstBefore.subtract(new BigDecimal("300.00")), destAccount.getBalance());
+
+        // Verified double-entry reversal
+        verify(ledgerService).recordEntry(eq(tx), eq(destAccount), eq(EntryType.DEBIT), eq(new BigDecimal("300.00")), eq("INR"), contains("REVERSAL_TRANSFER_DEBIT"));
+        verify(ledgerService).recordEntry(eq(tx), eq(sourceAccount), eq(EntryType.CREDIT), eq(new BigDecimal("300.00")), eq("INR"), contains("REVERSAL_TRANSFER_CREDIT"));
+        verify(auditService).logAction(eq(99L), eq("TRANSACTION_REVERSAL"), eq("TRANSACTION"), eq(77L), anyString(), eq("127.0.0.1"));
+    }
+
+    @Test
+    @DisplayName("Reversal: Rejects reversal when caller is not Admin or Auditor")
+    void testReverseUnauthorized() {
+        assertThrows(UnauthorizedAccessException.class, () ->
+                transactionService.reverseTransaction(77L, "Invalid reason", principal, "127.0.0.1")
+        );
     }
 }
 

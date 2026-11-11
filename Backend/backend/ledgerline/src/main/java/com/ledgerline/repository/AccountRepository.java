@@ -1,6 +1,7 @@
 package com.ledgerline.repository;
 
 import com.ledgerline.entity.Account;
+import com.ledgerline.enums.AccountStatus;
 import jakarta.persistence.LockModeType;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
@@ -8,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,6 +22,11 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     boolean existsByAccountNumber(String accountNumber);
 
+    long countByStatus(AccountStatus status);
+
+    @Query("SELECT COALESCE(SUM(a.balance), 0) FROM Account a")
+    BigDecimal sumTotalLiquidity();
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("SELECT a FROM Account a WHERE a.id = :id")
     Optional<Account> findByIdWithLock(@Param("id") Long id);
@@ -28,4 +35,3 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query("SELECT a FROM Account a WHERE a.accountNumber = :accountNumber")
     Optional<Account> findByAccountNumberWithLock(@Param("accountNumber") String accountNumber);
 }
-

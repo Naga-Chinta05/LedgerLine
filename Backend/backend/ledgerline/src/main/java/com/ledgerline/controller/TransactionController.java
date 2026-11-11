@@ -1,6 +1,7 @@
 package com.ledgerline.controller;
 
 import com.ledgerline.dto.request.DepositRequest;
+import com.ledgerline.dto.request.ReverseTransactionRequest;
 import com.ledgerline.dto.request.TransferRequest;
 import com.ledgerline.dto.request.WithdrawalRequest;
 import com.ledgerline.dto.response.TransactionResponse;
@@ -97,6 +98,18 @@ public class TransactionController {
         Pageable pageable = PageRequest.of(page, size);
         Page<TransactionResponse> transactions = transactionService.getAllTransactions(pageable);
         return ResponseEntity.ok(transactions);
+    }
+
+    @PostMapping("/admin/transactions/{id}/reverse")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AUDITOR')")
+    public ResponseEntity<TransactionResponse> reverseTransaction(
+            @PathVariable Long id,
+            @Valid @RequestBody ReverseTransactionRequest request,
+            @AuthenticationPrincipal UserPrincipal principal,
+            HttpServletRequest httpRequest) {
+        String ipAddress = getClientIp(httpRequest);
+        TransactionResponse response = transactionService.reverseTransaction(id, request.getReason(), principal, ipAddress);
+        return ResponseEntity.ok(response);
     }
 
     private String getClientIp(HttpServletRequest request) {

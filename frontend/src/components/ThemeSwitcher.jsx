@@ -161,3 +161,4 @@ const ThemeSwitcher = ({ minimal = false }) => {
 };
 
 export default ThemeSwitcher;
+

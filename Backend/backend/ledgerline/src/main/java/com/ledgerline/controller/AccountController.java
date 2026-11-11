@@ -3,6 +3,8 @@ package com.ledgerline.controller;
 import com.ledgerline.dto.request.CreateAccountRequest;
 import com.ledgerline.dto.request.UpdateAccountStatusRequest;
 import com.ledgerline.dto.response.AccountResponse;
+import com.ledgerline.dto.response.AccountStatementResponse;
+import com.ledgerline.dto.response.SystemSummaryResponse;
 import com.ledgerline.enums.UserRole;
 import com.ledgerline.exception.UnauthorizedAccessException;
 import com.ledgerline.security.UserPrincipal;
@@ -12,12 +14,14 @@ import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.List;
 
 @RestController
@@ -64,6 +68,16 @@ public class AccountController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/accounts/{id}/statement")
+    public ResponseEntity<AccountStatementResponse> getAccountStatement(
+            @PathVariable Long id,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant startDate,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Instant endDate,
+            @AuthenticationPrincipal UserPrincipal principal) {
+        AccountStatementResponse response = accountService.getAccountStatement(id, startDate, endDate, principal);
+        return ResponseEntity.ok(response);
+    }
+
     @PatchMapping("/accounts/{id}/status")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<AccountResponse> updateAccountStatus(@PathVariable Long id,
@@ -85,6 +99,13 @@ public class AccountController {
         return ResponseEntity.ok(accounts);
     }
 
+    @GetMapping("/admin/summary")
+    @PreAuthorize("hasAnyRole('ADMIN', 'AUDITOR')")
+    public ResponseEntity<SystemSummaryResponse> getSystemSummary() {
+        SystemSummaryResponse summary = accountService.getSystemSummary();
+        return ResponseEntity.ok(summary);
+    }
+
     private String getClientIp(HttpServletRequest request) {
         String xfHeader = request.getHeader("X-Forwarded-For");
         if (xfHeader == null || xfHeader.isEmpty() || !xfHeader.contains(",")) {
@@ -93,4 +114,3 @@ public class AccountController {
         return xfHeader.split(",")[0].trim();
     }
 }
-
