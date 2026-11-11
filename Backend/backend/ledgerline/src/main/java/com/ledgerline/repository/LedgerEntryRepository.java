@@ -20,19 +20,25 @@ public interface LedgerEntryRepository extends JpaRepository<LedgerEntry, Long> 
 
     Page<LedgerEntry> findByAccountIdOrderByCreatedAtDesc(Long accountId, Pageable pageable);
 
+    Page<LedgerEntry> findAllByOrderByCreatedAtDesc(Pageable pageable);
+
     @Query("SELECT COALESCE(SUM(l.amount), 0) FROM LedgerEntry l WHERE l.entryType = :entryType")
     BigDecimal sumAmountByEntryType(@Param("entryType") EntryType entryType);
 
     @Query("SELECT COALESCE(SUM(l.amount), 0) FROM LedgerEntry l WHERE l.account.id = :accountId AND l.entryType = :entryType")
-    BigDecimal sumAmountByAccountAndEntryType(@Param("accountId") Long accountId, @Param("entryType") EntryType entryType);
+    BigDecimal sumAmountByAccountAndEntryType(@Param("accountId") Long accountId,
+            @Param("entryType") EntryType entryType);
 
     @Query("SELECT l FROM LedgerEntry l WHERE l.account.id = :accountId AND l.createdAt >= :startDate AND l.createdAt <= :endDate ORDER BY l.createdAt ASC, l.id ASC")
     List<LedgerEntry> findByAccountIdAndDateRange(@Param("accountId") Long accountId,
-                                                  @Param("startDate") Instant startDate,
-                                                  @Param("endDate") Instant endDate);
+            @Param("startDate") Instant startDate,
+            @Param("endDate") Instant endDate);
 
     @Query("SELECT COALESCE(SUM(l.amount), 0) FROM LedgerEntry l WHERE l.account.id = :accountId AND l.entryType = :entryType AND l.createdAt < :beforeDate")
     BigDecimal sumAmountByAccountAndEntryTypeBefore(@Param("accountId") Long accountId,
-                                                    @Param("entryType") EntryType entryType,
-                                                    @Param("beforeDate") Instant beforeDate);
+            @Param("entryType") EntryType entryType,
+            @Param("beforeDate") Instant beforeDate);
+
+    @Query("SELECT COUNT(l) FROM LedgerEntry l WHERE l.account.id = :accountId")
+    long countByAccountId(@Param("accountId") Long accountId);
 }

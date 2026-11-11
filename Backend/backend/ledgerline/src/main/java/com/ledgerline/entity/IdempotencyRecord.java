@@ -4,8 +4,11 @@ import jakarta.persistence.*;
 import java.time.Instant;
 
 @Entity
-@Table(name = "idempotency_records",
-       uniqueConstraints = @UniqueConstraint(name = "uk_idempotency_user_key", columnNames = {"user_id", "idempotency_key"}))
+@Table(name = "idempotency_records", uniqueConstraints = @UniqueConstraint(name = "uk_idempotency_user_key", columnNames = {
+        "user_id", "idempotency_key" }), indexes = {
+                @Index(name = "idx_idempotency_user_key", columnList = "user_id, idempotency_key"),
+                @Index(name = "idx_idempotency_created_at", columnList = "created_at")
+        })
 public class IdempotencyRecord {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,20 +36,86 @@ public class IdempotencyRecord {
     private Instant createdAt;
 
     @PrePersist
-    void onCreate() { createdAt = Instant.now(); }
+    void onCreate() {
+        if (createdAt == null) {
+            createdAt = Instant.now();
+        }
+    }
 
-    public Long getId() { return id; }
-    public Long getUserId() { return userId; }
-    public void setUserId(Long userId) { this.userId = userId; }
-    public String getIdempotencyKey() { return idempotencyKey; }
-    public void setIdempotencyKey(String idempotencyKey) { this.idempotencyKey = idempotencyKey; }
-    public String getRequestHash() { return requestHash; }
-    public void setRequestHash(String requestHash) { this.requestHash = requestHash; }
-    public Long getTransactionId() { return transactionId; }
-    public void setTransactionId(Long transactionId) { this.transactionId = transactionId; }
-    public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
-    public String getResponseBody() { return responseBody; }
-    public void setResponseBody(String responseBody) { this.responseBody = responseBody; }
-    public Instant getCreatedAt() { return createdAt; }
+    public IdempotencyRecord() {
+    }
+
+    public IdempotencyRecord(Long userId, String idempotencyKey, String requestHash, Long transactionId, String status,
+            String responseBody) {
+        this.userId = userId;
+        this.idempotencyKey = idempotencyKey;
+        this.requestHash = requestHash;
+        this.transactionId = transactionId;
+        this.status = status;
+        this.responseBody = responseBody;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getIdempotencyKey() {
+        return idempotencyKey;
+    }
+
+    public void setIdempotencyKey(String idempotencyKey) {
+        this.idempotencyKey = idempotencyKey;
+    }
+
+    public String getRequestHash() {
+        return requestHash;
+    }
+
+    public void setRequestHash(String requestHash) {
+        this.requestHash = requestHash;
+    }
+
+    public Long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public String getResponseBody() {
+        return responseBody;
+    }
+
+    public void setResponseBody(String responseBody) {
+        this.responseBody = responseBody;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
 }

@@ -11,6 +11,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 
 @Repository
@@ -22,8 +23,7 @@ public interface FinancialTransactionRepository extends JpaRepository<FinancialT
     Page<FinancialTransaction> findByAccountId(@Param("accountId") Long accountId, Pageable pageable);
 
     @Query("SELECT t FROM FinancialTransaction t WHERE t.sourceAccount.id IN :accountIds OR t.destinationAccount.id IN :accountIds OR t.createdBy = :userId ORDER BY t.createdAt DESC")
-    Page<FinancialTransaction> findByUserInvolvement(@Param("userId") Long userId,
-            @Param("accountIds") List<Long> accountIds, Pageable pageable);
+    Page<FinancialTransaction> findByUserInvolvement(@Param("userId") Long userId, @Param("accountIds") List<Long> accountIds, Pageable pageable);
 
     List<FinancialTransaction> findTop10ByCreatedByOrderByCreatedAtDesc(Long createdBy);
 
@@ -31,6 +31,18 @@ public interface FinancialTransactionRepository extends JpaRepository<FinancialT
 
     long countByStatus(TransactionStatus status);
 
+    long countByCreatedBy(Long createdBy);
+
+    List<FinancialTransaction> findByStatus(TransactionStatus status);
+
     @Query("SELECT COALESCE(SUM(t.amount), 0) FROM FinancialTransaction t WHERE t.status = 'POSTED'")
     BigDecimal sumTotalVolume();
+
+    @Query("SELECT COALESCE(SUM(t.amount), 0) FROM FinancialTransaction t WHERE t.status = 'POSTED' AND t.type = :type")
+    BigDecimal sumTotalVolumeByType(@Param("type") TransactionType type);
+
+    @Query("SELECT t FROM FinancialTransaction t WHERE (t.sourceAccount.id = :accountId OR t.destinationAccount.id = :accountId) AND t.createdAt >= :startDate AND t.createdAt <= :endDate ORDER BY t.createdAt DESC")
+    List<FinancialTransaction> findByAccountIdAndDateRange(@Param("accountId") Long accountId,
+                                                          @Param("startDate") Instant startDate,
+                                                          @Param("endDate") Instant endDate);
 }

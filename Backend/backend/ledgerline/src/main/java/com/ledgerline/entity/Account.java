@@ -6,7 +6,11 @@ import java.math.BigDecimal;
 import java.time.Instant;
 
 @Entity
-@Table(name = "accounts")
+@Table(name = "accounts", indexes = {
+        @Index(name = "idx_accounts_owner_id", columnList = "owner_id"),
+        @Index(name = "idx_accounts_status", columnList = "status"),
+        @Index(name = "idx_accounts_account_num", columnList = "account_number")
+})
 public class Account {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,27 +42,109 @@ public class Account {
     @PrePersist
     void onCreate() {
         Instant now = Instant.now();
-        createdAt = now;
-        updatedAt = now;
-        if (balance == null) balance = BigDecimal.ZERO;
-        if (currency == null) currency = "INR";
-        if (status == null) status = AccountStatus.ACTIVE;
+        if (createdAt == null) {
+            createdAt = now;
+        }
+        if (updatedAt == null) {
+            updatedAt = now;
+        }
+        if (balance == null)
+            balance = BigDecimal.ZERO;
+        if (currency == null)
+            currency = "INR";
+        if (status == null)
+            status = AccountStatus.ACTIVE;
     }
 
     @PreUpdate
-    void onUpdate() { updatedAt = Instant.now(); }
+    void onUpdate() {
+        updatedAt = Instant.now();
+    }
 
-    public Long getId() { return id; }
-    public String getAccountNumber() { return accountNumber; }
-    public void setAccountNumber(String accountNumber) { this.accountNumber = accountNumber; }
-    public User getOwner() { return owner; }
-    public void setOwner(User owner) { this.owner = owner; }
-    public BigDecimal getBalance() { return balance; }
-    public void setBalance(BigDecimal balance) { this.balance = balance; }
-    public String getCurrency() { return currency; }
-    public void setCurrency(String currency) { this.currency = currency; }
-    public AccountStatus getStatus() { return status; }
-    public void setStatus(AccountStatus status) { this.status = status; }
-    public Instant getCreatedAt() { return createdAt; }
-    public Instant getUpdatedAt() { return updatedAt; }
+    public Account() {
+    }
+
+    public Account(String accountNumber, User owner, BigDecimal balance, String currency, AccountStatus status) {
+        this.accountNumber = accountNumber;
+        this.owner = owner;
+        this.balance = balance != null ? balance : BigDecimal.ZERO;
+        this.currency = currency != null ? currency : "INR";
+        this.status = status != null ? status : AccountStatus.ACTIVE;
+    }
+
+    public boolean isActive() {
+        return this.status == AccountStatus.ACTIVE;
+    }
+
+    public boolean isFrozen() {
+        return this.status == AccountStatus.FROZEN;
+    }
+
+    public boolean isClosed() {
+        return this.status == AccountStatus.CLOSED;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    public void setAccountNumber(String accountNumber) {
+        this.accountNumber = accountNumber;
+    }
+
+    public User getOwner() {
+        return owner;
+    }
+
+    public void setOwner(User owner) {
+        this.owner = owner;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
+    }
+
+    public String getCurrency() {
+        return currency;
+    }
+
+    public void setCurrency(String currency) {
+        this.currency = currency;
+    }
+
+    public AccountStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(AccountStatus status) {
+        this.status = status;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(Instant createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(Instant updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 }
